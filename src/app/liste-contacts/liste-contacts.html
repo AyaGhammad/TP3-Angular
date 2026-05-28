@@ -1,0 +1,104 @@
+<div>
+    <h2>Contacts ({{contacts.length}})</h2>
+
+
+    <button (click)="filtreActif = null">Tous ({{contacts.length}})</button>
+    <button (click)="filtreActif = true">Actifs </button>
+    <button (click)="filtreActif = false">Inactifs</button>
+
+    @if (contactsFilters.length === 0 ){
+        <p>Aucun Contact dans cette categorie.</p>
+    }
+
+    @if(contacts.length>10){
+        <p>Carnet bien rempli !</p>
+    }@else if (contacts.length>0) {
+        <p>{{contacts.length}} contacts(s) enregistre(s).</p>
+    }@else {
+        <p>Le carnet est vide.</p>
+    }
+
+    <ul>
+        @for(c of contactsFilters ; track c.email; let i = $index){
+            <li [ngClass]="{'contact-actif': c.actif,
+             'contact-inactif': !c.actif,
+             'top-score': c.score >= 16,
+             'score-excellent': c.score >= 16,
+             'score-passable': c.score >= 10 && c.score < 16,
+             'score-echec': c.score < 10,
+             'premier-item': $first}"  >
+                <span>{{i+1}}</span>
+                <strong >{{c.nom}}</strong> - {{c.email}} - Score : {{c.score}}/20
+                @if(c.actif){
+                    <span >Actif</span>
+                }@else{
+                    <span >Inactif</span>
+                }
+                @if($first){
+                    <small>(Premier)</small>
+                }
+                @if ($last){
+                    <small>(Dernier)</small>
+                }
+                @switch(c.role){
+                    @case ('admin'){
+                        <span>Admin</span>
+                    }
+                    @case ('user'){
+                        <span>User</span>
+                    }
+                    @case ('guest'){
+                        <span>Guest</span>
+                    }
+                }
+            </li>
+             <!--affichage avec appSurvol et appHighlight-->
+            <li appSurvol>{{c.nom}}</li>
+            <li [appSurvol]="'lightblue'">{{c.nom}}</li>
+            <li [appSurvol]="c.role==='admin'? '#FFE0E0' : '#E0F0FF'">{{c.nom}}({{c.role}})</li>
+            <div appHighlight [isActive]="c.actif">Element actif qui reagit au survol</div>
+        }@empty {
+            <li>aucun resultat pour ce filtre.</li>
+        }
+    </ul>
+
+    <table>
+        @for(c of contacts; track c.email ; let pair = $even){
+            <tr [style.background]="pair ?'#F5F5F5' : 'white'">
+                <td>{{c.nom}}</td>
+                <td>{{c.score}}/20</td>
+                <td>{{c.actif ? 'Actif' : 'Inactif'}}</td>
+            </tr>
+        }
+    </table>
+
+    @for (c of contacts; track c.email; let i = $index) {
+        <li>
+            {{ i + 1 }}.
+
+            <strong>{{ c.nom | uppercase }}</strong>
+          
+            <em>{{ c.email | slice:0:20 }}</em>
+          
+            Score : {{ c.score | number:'1.1-1' }}/20
+           
+            ({{ c.score / 20 | percent:'1.0-0' }})
+           
+
+            
+            Initiales : {{ c.nom | uppercase | slice:0:1 }}
+            avec initialespipe: 
+            {{c.nom | initiales}}
+            {{c.nom | initiales: '-'}}
+            {{c.nom | initiales | uppercase}}
+
+            mention : {{c.score | mention}}
+        </li>
+    }
+
+
+
+
+
+   
+</div>
